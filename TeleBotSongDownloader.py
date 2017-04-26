@@ -44,7 +44,9 @@ def key_l2(bot, update):
 
 @run_async
 def key_pr(bot, update):
-    keyboard = [[InlineKeyboardButton("Idioma 🗣", callback_data='lang'),InlineKeyboardButton("Sistema operativo ⚙", callback_data='os')]]
+    keyboard = [[InlineKeyboardButton("Idioma 🗣", callback_data='lang'),
+                InlineKeyboardButton("Sistema operativo ⚙", callback_data='os')],
+                [InlineKeyboardButton("Calidad de audio 🎶", callback_data='ad')]]
 
     reply_markup2 = InlineKeyboardMarkup(keyboard)
 
@@ -53,7 +55,9 @@ def key_pr(bot, update):
 
 @run_async
 def key_pren(bot, update):
-    keyboard = [[InlineKeyboardButton("Language 🗣", callback_data='langen'),InlineKeyboardButton("Operative system ⚙", callback_data='osen')]]
+    keyboard = [[InlineKeyboardButton("Language 🗣", callback_data='langen'),
+                InlineKeyboardButton("Operative system ⚙", callback_data='osen')],
+                [InlineKeyboardButton("Audio quality 🎶", callback_data='aden')]]
 
     reply_markup2 = InlineKeyboardMarkup(keyboard)
 
@@ -273,7 +277,7 @@ def changes(bot,update):                                # '/changelog' function
     lang(bot,update)
   elif 'es' in read_database(chat_id):
     bot.sendMessage(chat_id=update.message.chat_id,
-      text="*Versión actual:* _2.3.10.26.04_\n\n- *SOLUCIÓN DEFINITIVA A LAS DESCARGAS*\n\n- *TRADUCCIÓN COMPLETA A INGLÉS*: usa el comando /preferences para definir tu idioma.\n\n- Nueva duración máxima: *1 hora*.\
+      text="*Versión actual:* _2.3.15.26.04_\n\n- *ELIGE LA CALIDAD DE AUDIO* de tus canciones en /preferences\n\n- *SOLUCIÓN DEFINITIVA A LAS DESCARGAS*\n\n- *TRADUCCIÓN COMPLETA A INGLÉS*: usa el comando /preferences para definir tu idioma.\n\n- Nueva duración máxima: *1 hora*.\
       \n- *METADATOS en todas las descargas*\n- Optimizada la velocidad *de descarga*.\n- Mejorados los *tiempos de espera*.\n- Optimización de los _servicios_ (debido a la nueva longitud máxima admitida).\
       \n- Tiempo de espera automático *si la congestión del servidor está por encima del 80%*.\n- Añadido *multiproceso* para atender hasta 50 peticiones simultáneas (en un futuro se _ampliará_).\
       \n- Solucionado un error por el cual *no se descargaban los vídeos*.\n- Nuevo mensaje cuando *un vídeo largo no puede ser enviado*.\
@@ -283,7 +287,7 @@ def changes(bot,update):                                # '/changelog' function
       parse_mode=telegram.ParseMode.MARKDOWN)
   elif 'en' in read_database(chat_id):
     bot.sendMessage(chat_id=update.message.chat_id,
-      text="*Current version:* _2.3.10.26.04_\n\n- *DEFINITIVE SOLUTION FOR DOWNLOADS*\n\n- *COMPLETE ENGLISH TRANSLATION*: use /preferences to define your language.\n\n- New maximum duration: *1 hour*.\
+      text="*Current version:* _2.3.15.26.04_\n\n- *CHOOSE AUDIO QUALITY* of downloaded songs in /preferences\n\n- *DEFINITIVE SOLUTION FOR DOWNLOADS*\n\n- *COMPLETE ENGLISH TRANSLATION*: use /preferences to define your language.\n\n- New maximum duration: *1 hour*.\
       \n- *METADATA in all downloads*\n- Optimized *download speed*.\n- Improved *waiting times*.\n- _Service_ optimizations (because of the new video lenght).\n- Automatic wait time *if server congestion is above 80%*.\
       \n- Added *multi-process* to handle up to 50 concurrent requests (in a future wil be extended)\n- Fixed an error by which *the videos were not downloaded*.\
       \n- New message when *a long video can not be sent*.\n- *Server update*: simultaneous downloads without errors or failures.\
@@ -434,7 +438,7 @@ updater.start_polling()
 
 # Prints basic bot information as it is working and the current version
 print("\nBot en funcionamiento")
-print("\nVersión: 2.3.10.26.04")
+print("\nVersión: 2.3.15.26.04")
 try:
     while 1:
         time.sleep(10)    # Prevents the bot from disconnecting

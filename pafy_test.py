@@ -3,7 +3,7 @@ from pydub import AudioSegment 	# pip install pydub ('libavtools' and 'ffmpeg' r
 import os
 import os.path as path
 import threading
-from database import read_database,write_database,cont_database,read_os
+from database import read_database,write_database,cont_database,read_os,read_audio
 from telegram.ext.dispatcher import run_async
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
@@ -73,13 +73,25 @@ def video_down(bot,update,chat_id,user):
 		titulo.close()
 		idioma = read_database(chat_id)
 		cont_database(chat_id)
+		ad_quality = read_audio(chat_id)
+		if ad_quality == None:
+			ad_quality = "256k"
+		if ad_quality == "120k":
+			calidad = "baja"
+			calidad_en = "low"
+		elif ad_quality == "256k":
+			calidad = "media"
+			calidad_en = "medium"
+		elif ad_quality == "320k":
+			calidad = "alta"
+			calidad_en = "high"
 		time.sleep(2)
 		cov_name = "cover_{}.jpg".format(chat_id)
 		if 'es' in idioma:
-			bot.sendMessage(chat_id,text="Estamos descargando la canción. \n\nComo este bot está pensado para descargar música, buscaremos el *título, artista, etc* _independientemente de lo que hayas enviado_\n\n\nPor favor, espere...\n\n*NOTA: si observa que la velocidad de descarga es muy lenta, acceda a* /errors *para obtener asistencia e información*",
+			bot.sendMessage(chat_id,text="Estamos descargando la canción en *calidad "+calidad+"* (cámbialo en /preferences).\n\nComo este bot está pensado para descargar música, buscaremos el *título, artista, etc* _independientemente de lo que hayas enviado_\n\n\nPor favor, espere...\n\n*NOTA: si observa que la velocidad de descarga es muy lenta, acceda a* /errors *para obtener asistencia e información*",
 				parse_mode=telegram.ParseMode.MARKDOWN)
 		elif 'en' in idioma:
-			bot.sendMessage(chat_id,text="We are downloading the song. \n\nAs this is a bot for downloading music, we will search for *title, artist, etc* _regardless of what you've sent_\n\n\nPlease wait ...\n\n*INFO: If you notice that the download speed is very slow, access* /errors *for assistance and information*",
+			bot.sendMessage(chat_id,text="We are downloading the song in *"+calidad_en+" quality* (change it in /preferences).\n\nAs this is a bot for downloading music, we will search for *title, artist, etc* _regardless of what you've sent_\n\n\nPlease wait ...\n\n*INFO: If you notice that the download speed is very slow, access* /errors *for assistance and information*",
 				parse_mode=telegram.ParseMode.MARKDOWN)
 		api = ask_for_credentials()
 		song = api.search(name,max_results=1)
@@ -119,7 +131,7 @@ def video_down(bot,update,chat_id,user):
 				bot.sendMessage(chat_id,"We have your song ready 🙂\nAs it is a bit bigger than the others, it will take us a bit longer to send it to you _(but you don't have to worry about anything 😉)_",
 					parse_mode=telegram.ParseMode.MARKDOWN)
 		print("\n\tConvirtiendo a mp3...")
-		AudioSegment.from_file(full_name_w,"webm").export(full_name_m,format="mp3",bitrate="256k",cover=picture,tags={'artist': artist, 'album': album, 'title': titulo_met})
+		AudioSegment.from_file(full_name_w,"webm").export(full_name_m,format="mp3",bitrate=ad_quality,cover=picture,tags={'artist': artist, 'album': album, 'title': titulo_met})
 		if path.exists(full_name_w):
 			os.remove(full_name_w)
 		if path.exists(cov_name):

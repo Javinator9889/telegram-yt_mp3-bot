@@ -9,7 +9,7 @@ from errores import key_b,key_ed,key_o, key_eden, key_oen
 from pafy_test import key_f, key_fen   # From file "pafy_test.py"
 from sender import sender
 from curl import descarga              # From file "curl.py"
-from database import write_database,read_database,write_os,read_os
+from database import write_database,read_database,write_os,read_os,read_audio,set_audio
 
 # This function is for distributing the "callback queries" between different options. Also it's for basic ReplyKeyboardMarkup
 
@@ -45,6 +45,28 @@ def key_osen(bot, update,chat_id):
 
     bot.sendMessage(text='What is your operative system? _(only smartphones; this option is irrelevant for PC users)_',
       parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=reply_markup2,chat_id=chat_id)
+
+def key_ad(bot,update,chat_id):
+    keyboard = [[InlineKeyboardButton("Baja Calidad 💾", callback_data='LQ'),
+                InlineKeyboardButton("Calidad Media 💿", callback_data='MQ')],
+                [InlineKeyboardButton("Alta Calidad 💽", callback_data='HQ')]]
+
+    reply_markup2 = InlineKeyboardMarkup(keyboard)
+
+    bot.sendMessage(chat_id=chat_id,text="*ELIJA UNA DE LAS SIGUIENTES OPCIONES DE CALIDAD DE AUDIO*:\n\n- *Baja Calidad* - _@120 kbps_\n- *Calidad Media* - _@256 kbps_\n- *Alta Calidad* - _@320 kbps_\
+      \n\nLa calidad elegida _repercute directamente_ en los *tiempos de descarga* y el *tamaño del archivo* (cuanto mayor sea la calidad mayor será el tiempo necesario y el tamaño)",
+      parse_mode=telegram.ParseMode.MARKDOWN,reply_markup = reply_markup2)
+
+def key_aden(bot,update,chat_id):
+    keyboard = [[InlineKeyboardButton("Low Quality 💾", callback_data='LQ'),
+                InlineKeyboardButton("Medium Quality 💿", callback_data='MQ')],
+                [InlineKeyboardButton("High Quality 💽", callback_data='HQ')]]
+
+    reply_markup2 = InlineKeyboardMarkup(keyboard)
+
+    bot.sendMessage(chat_id = chat_id,text="*CHOOSE ONE OF THE FOLLOWING OPTIONS OF QUALITY:*\n\n- *Low Quality* - _@120 kbps_\n- *Medium Quality* - _@256 kbps_\n- *High Quality* - _@320 kbps_\
+      \n\nThe chosen quality _has effect directly_ with *download time* and *file size* (when higher quality more time and size)",
+      parse_mode=telegram.ParseMode.MARKDOWN,reply_markup = reply_markup2)
 
 def botones(bot,update,chat_id,message_id,value,user):  # 'value' is obtained from "def buttons" in 'TeleBotSongDownloader.py'
     title_file="title_{}.txt".format(chat_id)
@@ -332,3 +354,46 @@ rate the bot ⭐ an then *leave a review* 📝.\nWe read them _every day_, so we
         message_id=message_id)
       value="iOS"
       write_os(chat_id,user,value)
+    elif value == "ad":
+      bot.editMessageText(text="Actualizando preferencias de calidad de audio...",
+        chat_id=chat_id,
+        message_id=message_id)
+      key_ad(bot,update,chat_id)
+    elif value == "aden":
+      bot.editMessageText(text="Updating audio quality preferences...",
+        chat_id=chat_id,
+        message_id=message_id)
+      key_aden(bot,update,chat_id)
+    elif value == "LQ":
+      if 'es' in read_database(chat_id):
+        bot.editMessageText(text="Calidad de audio guardada correctamente. Usa /preferences para cambiarla en cualquier momento",
+          chat_id=chat_id,
+          message_id=message_id)
+      elif 'en' in read_database(chat_id):
+        bot.editMessageText(text="Audio quality preferences saved correctly. Use /preferences for changing it whenever you want",
+          chat_id=chat_id,
+          message_id=message_id)
+      value = "120k"
+      set_audio(chat_id,value)
+    elif value == "MQ":
+      if 'es' in read_database(chat_id):
+        bot.editMessageText(text="Calidad de audio guardada correctamente. Usa /preferences para cambiarla en cualquier momento",
+          chat_id=chat_id,
+          message_id=message_id)
+      elif 'en' in read_database(chat_id):
+        bot.editMessageText(text="Audio quality preferences saved correctly. Use /preferences for changing it whenever you want",
+          chat_id=chat_id,
+          message_id=message_id)
+      value = "256k"
+      set_audio(chat_id,value)
+    elif value == "HQ":
+      if 'es' in read_database(chat_id):
+        bot.editMessageText(text="Calidad de audio guardada correctamente. Usa /preferences para cambiarla en cualquier momento",
+          chat_id=chat_id,
+          message_id=message_id)
+      elif 'en' in read_database(chat_id):
+        bot.editMessageText(text="Audio quality preferences saved correctly. Use /preferences for changing it whenever you want",
+          chat_id=chat_id,
+          message_id=message_id)
+      value = "320k"
+      set_audio(chat_id,value)

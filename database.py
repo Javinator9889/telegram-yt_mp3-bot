@@ -112,3 +112,27 @@ def write_os(chat_id,name,os):
 	c.execute("""UPDATE Usuario SET OS = %s WHERE chat_id = %s""", (os, chat_id))
 	db.commit()
 	db.close()
+
+def read_audio(chat_id):
+	db = pymysql.connect("YOUR_HOST (localhost,127.0.0.1, ...)","YOUR_USER","YOUR_PASSWORD","DATABASE_TABLE_NAME",charset='utf8')
+	c = db.cursor()
+	0
+	c.execute('SET NAMES utf8;')
+	c.execute('SET CHARACTER SET utf8;')
+	c.execute('SET character_set_connection=utf8;')
+	c.execute("""SELECT audio_quality FROM Usuario WHERE chat_id = %s""",(chat_id))
+	aux = c.fetchone()
+	value = aux[0]
+	db.close()
+	return value
+
+def set_audio(chat_id,value):
+	db = pymysql.connect("YOUR_HOST (localhost,127.0.0.1, ...)","YOUR_USER","YOUR_PASSWORD","DATABASE_TABLE_NAME",charset='utf8')
+	c = db.cursor()
+	0
+	c.execute('SET NAMES utf8;')
+	c.execute('SET CHARACTER SET utf8;')
+	c.execute('SET character_set_connection=utf8;')
+	c.execute("""UPDATE Usuario SET audio_quality = %s WHERE chat_id = %s""",(value,chat_id))
+	db.commit()
+	db.close()
