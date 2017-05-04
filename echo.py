@@ -148,7 +148,7 @@ def echo(bot,update):
             title1=getVidTitle(Id,chat_id,bot,update)
             title_file="title_{}.txt".format(chat_id)
             video_file = "url_{}.txt".format(chat_id)
-            url2="https://www.googleapis.com/youtube/v3/videos?id={}&part=contentDetails&key=AIzaSyBUIuhTA4yUbC5dJr-mSr8Wcvirps34pcM".format(Id)
+            url2="https://www.googleapis.com/youtube/v3/videos?id={}&part=contentDetails&key={}".format(Id,API)
             print("\tURL API (2): ",url2)
             datas=urlopen(url2).read()
             json_data2=json.loads(datas)
@@ -165,8 +165,8 @@ def echo(bot,update):
             file = open(title_file,'w')
             file.write(title1)
             file.close()
-            if(durS>=3900):
-              bot.sendMessage(chat_id,"La duración de la canción/vídeo elegido es demasiado larga (más de 60 minutos). La descarga se cancela")
+            if(durS>=5400):
+              bot.sendMessage(chat_id,"La duración de la canción/vídeo elegido es demasiado larga (más de una hora y media). La descarga se cancela")
               if path.exists(video_file):
                 os.remove(video_file)
               if path.exists(title_file):
@@ -183,8 +183,8 @@ def echo(bot,update):
         try:
               print("\tEjecutando búsqueda...")
               Id=getVidId(query,chat_id,bot,update)
-              url2="https://www.googleapis.com/youtube/v3/videos?id={}&part=contentDetails&key=AIzaSyBUIuhTA4yUbC5dJr-mSr8Wcvirps34pcM".format(Id)
-              url_title="https://www.googleapis.com/youtube/v3/videos?id={}&part=snippet&key=AIzaSyBUIuhTA4yUbC5dJr-mSr8Wcvirps34pcM".format(Id)
+              url2="https://www.googleapis.com/youtube/v3/videos?id={}&part=contentDetails&key={}".format(Id,API)
+              url_title="https://www.googleapis.com/youtube/v3/videos?id={}&part=snippet&key={}".format(Id,API)
               print("\tURL de la api: ",url2)
               datas=urlopen(url2).read()
               json_data2=json.loads(datas)
@@ -197,12 +197,13 @@ def echo(bot,update):
               print("\tDuración: ",dur)
               durS=dur.total_seconds()
               print("\tDuración en segundos: ",durS)
-              if(durS>=3900):
+              if(durS>=5400):
                 bot.sendMessage(chat_id,"Aquí tienes la URL del vídeo encontrado: http://youtube.com/watch?v="+Id+"")
-                bot.sendMessage(chat_id,"La duración del vídeo es demasiado larga (más de 60 minutos).\n\nLa descarga se cancela")
+                bot.sendMessage(chat_id,"La duración del vídeo es demasiado larga (más de una hora y media).\n\nLa descarga se cancela")
               else:
-                title_prev = title.translate({ord(c): None for c in '.:",/\!@#$'})
-                title1 = title_prev.translate({ord('á'): 'a', ord('é'): 'e',ord('í'): 'i',ord('ó'): 'o',ord('ú'): 'u',ord('ñ'): 'n'})
+                title_prev = title.translate({ord(c): None for c in ':"/\!@#$'})
+                title_prev2 = title_prev.replace("." or ","," ")
+                title1 = title_prev2.translate({ord('á'): 'a', ord('é'): 'e',ord('í'): 'i',ord('ó'): 'o',ord('ú'): 'u',ord('ñ'): 'n'})
                 title_file="title_{}.txt".format(chat_id)
                 video_file = "url_{}.txt".format(chat_id)
                 file = open(title_file,'w')
@@ -234,7 +235,7 @@ def echo(bot,update):
           else:
             stndr_yt="http://youtube.com/watch?v="
             title1=getVidTitle(Id,chat_id,bot,update)
-            url2="https://www.googleapis.com/youtube/v3/videos?id={}&part=contentDetails&key=AIzaSyBUIuhTA4yUbC5dJr-mSr8Wcvirps34pcM".format(Id)
+            url2="https://www.googleapis.com/youtube/v3/videos?id={}&part=contentDetails&key={}".format(Id,API)
             print("\tURL API (2): ",url2)
             datas=urlopen(url2).read()
             json_data2=json.loads(datas)
@@ -253,8 +254,8 @@ def echo(bot,update):
             yt_url="https://youtube.com/watch?v={}".format(Id)
             file.write(yt_url)
             file.close()
-            if(durS>=3900):
-              bot.sendMessage(chat_id,"Video lenght is too long (more than 60 minutes). Download cancelled")
+            if(durS>=5400):
+              bot.sendMessage(chat_id,"Video lenght is too long (more than 1 hour and a half). Download cancelled")
               if path.exists(video_file):
                   os.remove(video_file)
               if path.exists(title_file):
@@ -271,8 +272,8 @@ def echo(bot,update):
         try:
               print("\tEjecutando búsqueda...")
               Id=getVidId(query,chat_id,bot,update)
-              url2="https://www.googleapis.com/youtube/v3/videos?id={}&part=contentDetails&key=AIzaSyBUIuhTA4yUbC5dJr-mSr8Wcvirps34pcM".format(Id)
-              url_title="https://www.googleapis.com/youtube/v3/videos?id={}&part=snippet&key=AIzaSyBUIuhTA4yUbC5dJr-mSr8Wcvirps34pcM".format(Id)
+              url2="https://www.googleapis.com/youtube/v3/videos?id={}&part=contentDetails&key={}".format(Id,API)
+              url_title="https://www.googleapis.com/youtube/v3/videos?id={}&part=snippet&key={}".format(Id,API)
               print("\tURL de la api: ",url2)
               datas=urlopen(url2).read()
               json_data2=json.loads(datas)
@@ -285,12 +286,13 @@ def echo(bot,update):
               print("\tDuración: ",dur)
               durS=dur.total_seconds()
               print("\tDuración en segundos: ",durS)
-              if(durS>=3900):
+              if(durS>=5400):
                 bot.sendMessage(chat_id,"Here is the URL of the video found: http://youtube.com/watch?v="+Id+"")
-                bot.sendMessage(chat_id,"Video lenght is too long (more than 60 minutes). Download cancelled")
+                bot.sendMessage(chat_id,"Video lenght is too long (more than 1 hour and a half). Download cancelled")
               else:
-                title_prev = title.translate({ord(c): None for c in '.:",/\!@#$'})
-                title1 = title_prev.translate({ord('á'): 'a', ord('é'): 'e',ord('í'): 'i',ord('ó'): 'o',ord('ú'): 'u',ord('ñ'): 'n'})
+                title_prev = title.translate({ord(c): None for c in ':"/\!@#$'})
+                title_prev2 = title_prev.replace("." or ","," ")
+                title1 = title_prev2.translate({ord('á'): 'a', ord('é'): 'e',ord('í'): 'i',ord('ó'): 'o',ord('ú'): 'u',ord('ñ'): 'n'})
                 title_def=unidecode(title1)
                 title_file="title_{}.txt".format(chat_id)
                 video_file = "url_{}.txt".format(chat_id)

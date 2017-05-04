@@ -12,8 +12,8 @@ def getVidTitle(query,chat_id,bot,update):
     print("\n----------------------------------------------------------------------------------------------------------------------------")
     print("Debug [2.5]")
     print("----------------------------------------------------------------------------------------------------------------------------")
-    id = query
-    url="https://www.googleapis.com/youtube/v3/search?part=id%2Csnippet&maxResults=1&q={}&key={}".format(id,API)
+    Id = query
+    url="https://www.googleapis.com/youtube/v3/videos?id={}&part=snippet&key={}".format(Id,API)
     print ("\tEnlace de la API (2): ",url)
     content=urlopen(url)
     json_text=content.read()
@@ -26,7 +26,8 @@ def getVidTitle(query,chat_id,bot,update):
       print("\tTítulo (m): ",title1)
       title_def=unidecode(title1)
       print("\tTítulo (ucde): ",title_def)
-      title_def = title_def.translate({ord(c): None for c in '́´.:,"/\!@#$[]'})    
+      title_f = title_def.translate({ord(c): None for c in '́´:"/\!@#$[]'})
+      title_def = title_f.replace("." or ","," ")
       print("\tTítulo (def): ",title_def)
     return title_def
   except (ValueError,IndexError,KeyError,urllib.error.HTTPError):

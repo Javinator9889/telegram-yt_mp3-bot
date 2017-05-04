@@ -12,6 +12,7 @@ import time
 from gmusicapi import Mobileclient  # pip install gmusicapi ('libavtools' and 'ffmpeg' requiered. Check "http://unofficial-google-music-api.readthedocs.io/en/latest/usage.html#usage" for getting assistance)
 import gmusicapi 					# Get metadata from Google Play Music
 import urllib.request
+import youtube_dl
 from curl import descarga
 
 def key_f(bot, update,chat_id):
@@ -49,9 +50,9 @@ def ask_for_credentials():
     logged_in = False
     attempts = 0
 
-    while not logged_in and attempts < 3:
-        email = "YOUR_GMAIL"
-        password = "YOUR_PASSWORD"
+    while not logged_in and attempts < 100:
+        email = "suscripcionesyt@gmail.com"
+        password = "porcuatro"
 
         logged_in = api.login(email, password, Mobileclient.FROM_MAC_ADDRESS)
         attempts += 1
@@ -71,6 +72,21 @@ def video_down(bot,update,chat_id,user):
 		full_name="{}_{}.".format(name,chat_id)
 		link.close()
 		titulo.close()
+		titulo_2 = name.translate({ord(c): None for c in '()[]-'})
+		titulo_3 = titulo_2.replace("feat","")
+		titulo_4 = titulo_3.replace("Lyrics" or "lyrics" or "LYRICS","")
+		titulo_5 = titulo_4.replace("Audio Only" or "audio Only" or "audio only","")
+		titulo_6 = titulo_5.replace("Official video" or "Official Video" or "Official" or "official" or "OFFICIAL","")
+		titulo_7 = titulo_6.replace("LIVE" or "Live" or "live","")
+		titulo_8 = titulo_7.replace("Cover" or "COVER" or "cover","")
+		titulo_9 = titulo_8.replace("short" or "Short" or "SHORT","")
+		titulo_10 = titulo_9.replace("HD","")
+		titulo_11 = titulo_10.replace("Version" or "version" or "VERSION","")
+		titulo_12 = titulo_11.replace("Video" or "video" or "VIDEO","")
+		titulo_13 = titulo_12.replace("long" or "Long" or "LONG","")
+		titulo_14 = titulo_13.replace("Lyric" or "lyric" or "LYRIC","")
+		titulo_15 = titulo_14.replace("  "," ")
+		print("\n\tTítulo de búsqueda: ",titulo_14)
 		idioma = read_database(chat_id)
 		cont_database(chat_id)
 		ad_quality = read_audio(chat_id)
@@ -94,14 +110,16 @@ def video_down(bot,update,chat_id,user):
 			bot.sendMessage(chat_id,text="We are downloading the song in *"+calidad_en+" quality* (change it in /preferences).\n\nAs this is a bot for downloading music, we will search for *title, artist, etc* _regardless of what you've sent_\n\n\nPlease wait ...\n\n*INFO: If you notice that the download speed is very slow, access* /errors *for assistance and information*",
 				parse_mode=telegram.ParseMode.MARKDOWN)
 		api = ask_for_credentials()
-		song = api.search(name,max_results=1)
+		song = api.search(titulo_14,max_results=1)
 		try:
 			album = song['song_hits'][0]['track']['album']
+			print("\n\tAlbum encontrado")
 		except IndexError:
 			print("Error al conseguir el álbum")
 			album = "Unknown"
 		try:
 			artist = song['song_hits'][0]['track']['albumArtist']
+			print("\tArtista encontrado")
 		except IndexError:
 			print("Error al conseguir el nombre del artista")
 			artist = "Unknown"
@@ -109,19 +127,22 @@ def video_down(bot,update,chat_id,user):
 			cover_url = song['song_hits'][0]['track']['albumArtRef'][0]['url']
 			urllib.request.urlretrieve(cover_url, cov_name)
 			picture = cov_name
+			print("\tCarátula encontrada")
 		except IndexError:
 			print("Error al conseguir la carátula del álbum")
 			picture = "default.png"
 		try:
 			titulo_met = song['song_hits'][0]['track']['title']
+			print("\tTítulo encontrado")
 		except IndexError:
 			print("Error al conseguir el título de la canción")
 			titulo_met = name
 		video = pafy.new(url)
-		audio = video.getbestaudio(preftype="webm")  # 'webm' has always the best quality audio (on YouTube)
+		audio = video.getbestaudio()  # 'webm' has always the best quality audio (on YouTube)
 		print("\n\tEntrado dentro de la sección de descarga...","//",threading.currentThread().getName(),"//")
+		print("\n\tFormato de audio: ",audio.extension)
 		audio.download(quiet=False,filepath=full_name+audio.extension)  # 'quiet=False' shows a progress bar
-		full_name_w="{}_{}.webm".format(name,chat_id)
+		full_name_w="{}_{}.{}".format(name,chat_id,audio.extension)
 		full_name_m="{}_{}.mp3".format(name,chat_id)
 		if (os.path.getsize(full_name_w)>=25000000): # For converting this huge files it's needed a bit more time than others
 			if 'es' in read_database(chat_id):
@@ -131,7 +152,7 @@ def video_down(bot,update,chat_id,user):
 				bot.sendMessage(chat_id,"We have your song ready 🙂\nAs it is a bit bigger than the others, it will take us a bit longer to send it to you _(but you don't have to worry about anything 😉)_",
 					parse_mode=telegram.ParseMode.MARKDOWN)
 		print("\n\tConvirtiendo a mp3...")
-		AudioSegment.from_file(full_name_w,"webm").export(full_name_m,format="mp3",bitrate=ad_quality,cover=picture,tags={'artist': artist, 'album': album, 'title': titulo_met})
+		AudioSegment.from_file(full_name_w,audio.extension).export(full_name_m,format="mp3",bitrate=ad_quality,cover=picture,tags={'artist': artist, 'album': album, 'title': titulo_met})
 		if path.exists(full_name_w):
 			os.remove(full_name_w)
 		if path.exists(cov_name):
@@ -237,3 +258,70 @@ def video_down(bot,update,chat_id,user):
 			sys.stdout.flush()
 			sys.stdin.flush()
 			print("//",threading.currentThread().getName(),"//","cerrado correctamente")
+	except (OSError,youtube_dl.utils.ExtractorError,youtube_dl.utils.DownloadError) as e:
+		try:
+			full_name_w="{}_{}.{}".format(name,chat_id,audio.extension)
+			full_name_m="{}_{}.mp3".format(name,chat_id)
+			if 'es' in read_database(chat_id):
+				bot.sendMessage(chat_id,text="No hemos podido descargar tu vídeo por temas de *Copyright*. _Sentimos mucho las molestias_",parse_mode=telegram.ParseMode.MARKDOWN)
+				try:
+					if path.exists(title_file):
+						os.remove(title_file)
+					if path.exists(video_file):
+						os.remove(video_file)
+					if path.exists(full_name_m):
+						song.close()
+						os.remove(full_name_m)
+					if path.exists(full_name_w):
+						os.remove(full_name_w)
+				except PermissionError:
+					print("\n\tError en los permisos (el archivo/s están siendo utilizados)")
+					print("Limpiando búffer y cerrando","//",threading.currentThread().getName(),"//")
+					sys.stdout.flush()
+					sys.stdin.flush()
+					print("//",threading.currentThread().getName(),"//","cerrado correctamente")
+			elif 'en' in read_database(chat_id):
+				bot.sendMessage(chat_id,text="We couldn't download your video because of *Copyright conditions*. _We're sorry for the inconvenience_",parse_mode=telegram.ParseMode.MARKDOWN)
+				try:
+					if path.exists(title_file):
+						os.remove(title_file)
+					if path.exists(video_file):
+						os.remove(video_file)
+					if path.exists(full_name_m):
+						song.close()
+						os.remove(full_name_m)
+					if path.exists(full_name_w):
+						os.remove(full_name_w)
+				except PermissionError:
+					print("\n\tError en los permisos (el archivo/s están siendo utilizados)")
+					print("Limpiando búffer y cerrando","//",threading.currentThread().getName(),"//")
+					sys.stdout.flush()
+					sys.stdin.flush()
+					print("//",threading.currentThread().getName(),"//","cerrado correctamente")
+		except UnboundLocalError:
+			if 'es' in read_database(chat_id):
+				bot.sendMessage(chat_id,text="No hemos podido descargar tu vídeo por temas de *Copyright*. _Sentimos mucho las molestias_",parse_mode=telegram.ParseMode.MARKDOWN)
+				try:
+					if path.exists(title_file):
+						os.remove(title_file)
+					if path.exists(video_file):
+						os.remove(video_file)
+				except PermissionError:
+					print("\n\tError en los permisos (el archivo/s están siendo utilizados)")
+					print("Limpiando búffer y cerrando","//",threading.currentThread().getName(),"//")
+					sys.stdout.flush()
+					sys.stdin.flush()
+					print("//",threading.currentThread().getName(),"//","cerrado correctamente")
+			elif 'en' in read_database(chat_id):
+				bot.sendMessage(chat_id,text="We couldn't download your video because of *Copyright conditions*. _We're sorry for the inconvenience_",parse_mode=telegram.ParseMode.MARKDOWN)
+				try:
+					if path.exists(title_file):
+						os.remove(title_file)
+					if path.exists(video_file):
+						os.remove(video_file)
+				except PermissionError:
+					print("\n\tError en los permisos (el archivo/s están siendo utilizados)")
+					print("Limpiando búffer y cerrando","//",threading.currentThread().getName(),"//")
+					sys.stdout.flush()
+					sys.stdin.flush()
+					print("//",threading.currentThread().getName(),"//","cerrado correctamente")
