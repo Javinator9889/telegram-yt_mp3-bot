@@ -51,8 +51,8 @@ def ask_for_credentials():
     attempts = 0
 
     while not logged_in and attempts < 100:
-        email = "suscripcionesyt@gmail.com"
-        password = "porcuatro"
+        email = "YOUR_GMAIL"
+        password = "YOUR_PASSWORD"
 
         logged_in = api.login(email, password, Mobileclient.FROM_MAC_ADDRESS)
         attempts += 1
