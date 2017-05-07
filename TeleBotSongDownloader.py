@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from unidecode import unidecode                                                         # pip install unidecode
 import logging                                                                          # Standard python libraries
+from logging.handlers import TimedRotatingFileHandler
 import telegram                                                                         # pip install python-telegram-bot
 from telegram.ext.dispatcher import run_async                                           # python-telegram-bot library
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup                         # python-telegram-bot library
@@ -14,7 +16,6 @@ from errores import mensaje_bot, key_b, key_ed, key_o, message_bot, key_eden, ke
 from botones import botones                                                             # From file "botones.py"
 from database import write_database, read_database                                      # From file "database.py"
 
-# -*- coding: utf-8 -*-
 
 date = time.strftime("%d_%m_%Y")                                                      # Get current date-time for creating the logging file with date info
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',    # Starting logging at WARNING level (for errors information)
@@ -125,16 +126,14 @@ def help(bot,update):                             # '/help' handler function
       text="A continuación tienes la lista de comandos:\n\n - /vid, para aprender a *utilizar el bot* @vid para buscar vídeos 🔍\
       \n\n - /privacy, donde podrás conocer *las políticas de privacidad* 👮\n\n - /preferences, para cambiar *tus preferencias de idioma 🗣* o *sistema operativo ⚙* cuando quieras\
       \n\n - /errors, para *recibir asistencia* 🛠\n\n\
- - /changelog, orientado más a los _desarrolladores_ 🤓 pero abierto a todo el mundo: la *lista de cambios y mejoras* que se incluyen con cada actualización del bot y enlace al proyecto de GitHub\n\n\n\
-*NOTA:* el Bot se desconecta a las _23:10_ (hora española) _para mantenimiento y actualización_ y vuleve a estar activo a las *9:30*.",
+ - /changelog, orientado más a los _desarrolladores_ 🤓 pero abierto a todo el mundo: la *lista de cambios y mejoras* que se incluyen con cada actualización del bot y enlace al proyecto de GitHub\n\n\n",
       parse_mode=telegram.ParseMode.MARKDOWN)
   elif 'en' in read_database(chat_id):
     bot.sendMessage(chat_id,
       text="Now you have command list:\n\n - /vid, for learning *how to use the bot* @vid for searching videos 🔍\
       \n\n - /privacy, where you can see *privacy policies* 👮\n\n - /preferences, for changing *your language preferences 🗣* or *operative system ones ⚙* whenever you want\
       \n\n - /errors, for *getting help* 🛠\n\n\
- - /changelog, designed for _developers_ 🤓 but accessible for everyone: list of *changes and improvements* included in each bot update and link to GitHub project\n\n\n\
-*INFO:* The Bot turns off at _23:10_ (Spanish time zone) _for maintenance and updates_ and is available at *9:30*.",
+ - /changelog, designed for _developers_ 🤓 but accessible for everyone: list of *changes and improvements* included in each bot update and link to GitHub project\n\n\n",
       parse_mode=telegram.ParseMode.MARKDOWN)
 
 @run_async
@@ -198,54 +197,54 @@ def vid(bot,update):                              # '/vid' function
   elif 'es' in read_database(chat_id):
     bot.sendMessage(chat_id,"Voy a enseñarte a utilizar el bot @vid")
     time.sleep(3)
-    step1 = open('/home/javier/BOT/paso1.png','rb')
+    step1 = open('/home/javialonso/BOT/paso1.png','rb')
     bot.sendPhoto(chat_id,step1)
     bot.sendMessage(chat_id,"Escribes en el teclado @vid para llamar al bot")
     time.sleep(7)
-    step2 = open('/home/javier/BOT/paso2.png','rb')
+    step2 = open('/home/javialonso/BOT/paso2.png','rb')
     bot.sendPhoto(chat_id,step2)
     bot.sendMessage(chat_id,
       text="Empiezas a escribir el *título del vídeo* que quieras encontrar",
       parse_mode=telegram.ParseMode.MARKDOWN)
     time.sleep(7)
-    step3 = open('/home/javier/BOT/paso3.png','rb')
+    step3 = open('/home/javialonso/BOT/paso3.png','rb')
     bot.sendPhoto(chat_id,step3)
     bot.sendMessage(chat_id,
       text="Una vez encuentres el vídeo que quieras descargar, *pulsas sobre él directamente*",
       parse_mode=telegram.ParseMode.MARKDOWN)
     time.sleep(7)
-    step4 = open('/home/javier/BOT/paso4.png','rb')
+    step4 = open('/home/javialonso/BOT/paso4.png','rb')
     bot.sendPhoto(chat_id,step4)
     bot.sendMessage(chat_id,"Se enviará el vídeo seleccionado y comenzará la descarga automáticamente")
     time.sleep(3)
-    final = open('/home/javier/BOT/paso5.png','rb')
+    final = open('/home/javialonso/BOT/paso5.png','rb')
     bot.sendPhoto(chat_id,final)
     bot.sendMessage(chat_id,"Listo, ya sabes cómo utilzar el bot @vid 😃")
   elif 'en' in read_database(chat_id):
     bot.sendMessage(chat_id,"I'm going to show you how to use the bot @vid")
     time.sleep(3)
-    step1 = open('/home/javier/BOT/paso1.png','rb')
+    step1 = open('/home/javialonso/BOT/paso1.png','rb')
     bot.sendPhoto(chat_id,step1)
     bot.sendMessage(chat_id,"First, type *as a message* @vid to call the bot",
       parse_mode=telegram.ParseMode.MARKDOWN)
     time.sleep(7)
-    step2 = open('/home/javier/BOT/paso2.png','rb')
+    step2 = open('/home/javialonso/BOT/paso2.png','rb')
     bot.sendPhoto(chat_id,step2)
     bot.sendMessage(chat_id,
       text="Then, *start typing the title* of the video you want to find",
       parse_mode=telegram.ParseMode.MARKDOWN)
     time.sleep(7)
-    step3 = open('/home/javier/BOT/paso3.png','rb')
+    step3 = open('/home/javialonso/BOT/paso3.png','rb')
     bot.sendPhoto(chat_id,step3)
     bot.sendMessage(chat_id,
       text="When you see the video you want to download, *press on it directly*",
       parse_mode=telegram.ParseMode.MARKDOWN)
     time.sleep(7)
-    step4 = open('/home/javier/BOT/paso4.png','rb')
+    step4 = open('/home/javialonso/BOT/paso4.png','rb')
     bot.sendPhoto(chat_id,step4)
     bot.sendMessage(chat_id,"The chosen video will be sent and the download will start")
     time.sleep(3)
-    final = open('/home/javier/BOT/paso5.png','rb')
+    final = open('/home/javialonso/BOT/paso5.png','rb')
     bot.sendPhoto(chat_id,final)
     bot.sendMessage(chat_id,"It's done, now you know how to use the bot @vid 😃")
 
@@ -277,8 +276,8 @@ def changes(bot,update):                                # '/changelog' function
     lang(bot,update)
   elif 'es' in read_database(chat_id):
     bot.sendMessage(chat_id=update.message.chat_id,
-      text="*Versión actual:* _2.3.15.26.04_\n\n- *ELIGE LA CALIDAD DE AUDIO* de tus canciones en /preferences\n\n- *SOLUCIÓN DEFINITIVA A LAS DESCARGAS*\n\n- *TRADUCCIÓN COMPLETA A INGLÉS*: usa el comando /preferences para definir tu idioma.\n\n- Nueva duración máxima: *1 hora*.\
-      \n- *METADATOS en todas las descargas*\n- Optimizada la velocidad *de descarga*.\n- Mejorados los *tiempos de espera*.\n- Optimización de los _servicios_ (debido a la nueva longitud máxima admitida).\
+      text="*Versión actual:* _2.3.21.07.05_\n\n- *ELIGE LA CALIDAD DE AUDIO* de tus canciones en /preferences\n\n- *SOLUCIÓN DEFINITIVA A LAS DESCARGAS*\n\n- *TRADUCCIÓN COMPLETA A INGLÉS*: usa el comando /preferences para definir tu idioma.\n\n- Nueva duración máxima: *1 hora y media*.\
+      \n- *METADATOS en todas las descargas*\n- EL BOT AHORA ESTÁ ACTIVO 24/7\n- Las canciones *se almacenan* para un envío más rápido\n- Optimizada la velocidad *de descarga*.\n- Mejorados los *tiempos de espera*.\n- Optimización de los _servicios_ (debido a la nueva longitud máxima admitida).\
       \n- Tiempo de espera automático *si la congestión del servidor está por encima del 80%*.\n- Añadido *multiproceso* para atender hasta 50 peticiones simultáneas (en un futuro se _ampliará_).\
       \n- Solucionado un error por el cual *no se descargaban los vídeos*.\n- Nuevo mensaje cuando *un vídeo largo no puede ser enviado*.\
       \n- *Actualización del servidor*: descargas simultáneas sin errores ni fallos\
@@ -287,8 +286,8 @@ def changes(bot,update):                                # '/changelog' function
       parse_mode=telegram.ParseMode.MARKDOWN)
   elif 'en' in read_database(chat_id):
     bot.sendMessage(chat_id=update.message.chat_id,
-      text="*Current version:* _2.3.15.26.04_\n\n- *CHOOSE AUDIO QUALITY* of downloaded songs in /preferences\n\n- *DEFINITIVE SOLUTION FOR DOWNLOADS*\n\n- *COMPLETE ENGLISH TRANSLATION*: use /preferences to define your language.\n\n- New maximum duration: *1 hour*.\
-      \n- *METADATA in all downloads*\n- Optimized *download speed*.\n- Improved *waiting times*.\n- _Service_ optimizations (because of the new video lenght).\n- Automatic wait time *if server congestion is above 80%*.\
+      text="*Current version:* _2.3.21.07.05_\n\n- *CHOOSE AUDIO QUALITY* of downloaded songs in /preferences\n\n- *DEFINITIVE SOLUTION FOR DOWNLOADS*\n\n- *COMPLETE ENGLISH TRANSLATION*: use /preferences to define your language.\n\n- New maximum duration: *1 hour and a half*.\
+      \n- *METADATA in all downloads*\n- BOT IS NOW ON 24/7\n- Songs are *stored* for a faster sending\n- Optimized *download speed*.\n- Improved *waiting times*.\n- _Service_ optimizations (because of the new video lenght).\n- Automatic wait time *if server congestion is above 80%*.\
       \n- Added *multi-process* to handle up to 50 concurrent requests (in a future wil be extended)\n- Fixed an error by which *the videos were not downloaded*.\
       \n- New message when *a long video can not be sent*.\n- *Server update*: simultaneous downloads without errors or failures.\
       \n- *Dialogs in the function* /errors: now, when writing the /errors command, you will be able to interact with the bot to offer you the best support.\
@@ -380,6 +379,24 @@ def voice(bot,update):                                  # Function for handling 
     bot.sendMessage(chat_id,text="What a beautiful voice, but I prefer _Lady GaGa_ 💃",
       parse_mode=telegram.ParseMode.MARKDOWN)
 
+@run_async
+def log(bot,update):
+  date = time.strftime("%d_%m_%Y")
+  next_date = time.strftime("%d_%m_%Y")
+  chat_id = "179622715"
+  path = "bot_log-WARNS--"+date+".log"
+  bot.sendMessage(chat_id=chat_id,text="Iniciado correctamente el servicio de envío de _logs_",parse_mode=telegram.ParseMode.MARKDOWN)
+  while date == next_date:
+    next_date = time.strftime("%d_%m_%Y")
+    time.sleep(1)
+  try:
+    log_file = open(path,'rb')
+    bot.sendDocument(chat_id,log_file)
+    log_file.close()
+  except telegram.error.BadRequest:
+    bot.sendMessage(chat_id=chat_id,text="*EL LOG DE HOY ESTÁ VACÍO*",parse_mode=telegram.ParseMode.MARKDOWN)
+  log(bot,update)
+
 # Print in console the requierd Copyright message because of GLP v3 license
 
 print("YouTube MP3 Downloader Bot (Telegram)  Copyright (C) 2017  Javinator9889\n\n\
@@ -395,7 +412,7 @@ archivo_api = open("API_KEY.txt","r")                         # Reads YouTube AP
 API=archivo_api.readline()
 
 # Initialize Telegram-bot variables
-updater = Updater(token["Telegram"], workers=50)              # Starts 50 threads for "updater" (declared with '@run_async' decorator)
+updater = Updater(token["Telegram"], workers=200)             # Starts 200 threads for "updater" (declared with '@run_async' decorator)
 dispatcher = updater.dispatcher                               # Starts "dispatcher" requierd to make the bot working properly
 
 # Initialize "Command" handlers
@@ -415,6 +432,8 @@ change_handler = CommandHandler('changelog', changes)
 dispatcher.add_handler(change_handler)
 pref_handler = CommandHandler('preferences', pref)
 dispatcher.add_handler(pref_handler)
+log_handler = CommandHandler('start_logging_sending',log)
+dispatcher.add_handler(log_handler)
 
 # Initialize "Message" handlers
 photo_handler = MessageHandler(Filters.photo, photo)
@@ -438,7 +457,7 @@ updater.start_polling()
 
 # Prints basic bot information as it is working and the current version
 print("\nBot en funcionamiento")
-print("\nVersión: 2.3.15.26.04")
+print("\nVersión: 2.3.21.07.05")
 try:
     while 1:
         time.sleep(10)    # Prevents the bot from disconnecting

@@ -4,8 +4,7 @@ import unicodedata
 from unidecode import unidecode
 import re
 
-def descarga(chat_id_str,title):
-	full_name="{}_{}.mp3".format(title,chat_id_str)
+def descarga(full_name):
 	url = 'https://file.io/?expires=1w'
 	files = {'file': open(full_name,'rb')}
 	print("\n\tSubiendo archivo a 'file.io'")
