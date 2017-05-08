@@ -9,6 +9,7 @@ from errores import key_b,key_ed,key_o, key_eden, key_oen
 from pafy_test import key_f, key_fen   # From file "pafy_test.py"
 from sender import sender
 from curl import descarga              # From file "curl.py"
+from get_Vid_Id import get_yt_video_id # From file "get_Vid_Id.py"
 from database import write_database,read_database,write_os,read_os,read_audio,set_audio
 
 # This function is for distributing the "callback queries" between different options. Also it's for basic ReplyKeyboardMarkup
@@ -69,13 +70,6 @@ def key_aden(bot,update,chat_id):
       parse_mode=telegram.ParseMode.MARKDOWN,reply_markup = reply_markup2)
 
 def botones(bot,update,chat_id,message_id,value,user):  # 'value' is obtained from "def buttons" in 'TeleBotSongDownloader.py'
-    title_file="title_{}.txt".format(chat_id)
-    video_file = "url_{}.txt".format(chat_id)
-    if path.exists(title_file):
-      file=open(title_file,'r')
-      title = file.readline()
-      full_name="{}_{}.mp3".format(title,chat_id)
-      file.close()
     star="https://goo.gl/12AADY"
     hour_spain = "http://24timezones.com/es_husohorario/madrid_hora_actual.php"
     hour_eng = "http://24timezones.com/world_directory/time_in_madrid.php"
@@ -174,14 +168,13 @@ se manda un *enlace* 📎 para descargarlo y luego ya se puede conseguir directa
         parse_mode=telegram.ParseMode.MARKDOWN,
         reply_markup=ReplyKeyboardRemove())
     elif value == "Z":
-      bot.sendMessage(chat_id,text="Antes de nada, ten en cuenta que *el bot se desconecta a las 23:10 🕚 (hora española)* \
-y se reactiva a las *9:30* 🕤\n(visita [este enlace]("+hour_spain+") para saber la hora en España).\
-        \n\nSi lo anterior no era tu caso, el bot puede no mostrar respuesta debido a un error ⚠ que no tenemos registrado. \
+      bot.sendMessage(chat_id,text="El bot puede no mostrar respuesta debido a un error ⚠ que no tenemos registrado. \
 Todos los días revisamos los errores del bot, por lo que debería solucionarse en esta semana 😄",
         parse_mode=telegram.ParseMode.MARKDOWN,
         reply_markup=ReplyKeyboardRemove())
     elif value == "S":
       bot.sendMessage(chat_id,text="Cuando se produce una descarga muy lenta, entran en juego varios factores fundamentales:\
+        \n\nSi la canción 🎶 que quieres descargar es *muy larga*, se va a necesitar mayor tiempo 🕒 dependiendo de la _calidad de audio_ que tengas elegida (usa /preferences para cambiarlo)\
         \n\n*Tu ubicación* 🛰 es determinante, pues cuanto más lejos te encuentres del servidor más se tarda.\
         \n*Los usuarios activos* 👨‍👩‍👧‍👦 provocan una demora en los tiempos de descarga.\n*El servidor puede haberse bloqueado* 🌁.\
         \n*El servidor de descargas* ❌ no responde, siendo esta última la razón más usual para descargas lentas.\
@@ -217,14 +210,13 @@ we provide you *a link* 📎 for downloading and then you can get it directly fr
         parse_mode=telegram.ParseMode.MARKDOWN,
         reply_markup=ReplyKeyboardRemove())
     elif value == "Zen":
-      bot.sendMessage(chat_id,text="Before going to the possible solutions, keep in mind that *the bot turns off at 23:10 🕚 (Spanish time zone)* \
-and starts at *9:30* 🕤\n(visit [this link]("+hour_eng+") to know the time in Spain).\
-        \n\nIf your error wasn't because of that, the bot can be not able to show response because of a non-registered error ⚠. \
+      bot.sendMessage(chat_id,text="The bot can be not able to show response because of a non-registered error ⚠. \
 We check everyday the information about happened errors and it should be solved in this week 😄",
         parse_mode=telegram.ParseMode.MARKDOWN,
         reply_markup=ReplyKeyboardRemove())
     elif value == "Sen":
       bot.sendMessage(chat_id,text="When a very slow download is happening, some key factors are relevant:\
+        \n\nIf the song 🎶 you were trying to download is *very long*, more time is needed 🕒 depending on chosen _audio quality_ (use /preferences for changing it)\
         \n\n*Your location* 🛰 is determinant, as when far away you are from the server and it takes longer to send you the song.\
         \n*Active users* 👨‍👩‍👧‍👦 can cause a delay in download-times.\n*Server can have got frozen* 🌁.\n*Download server* is not responding ❌, being this the most usual reason why downloads perform slowly.\
         \n\nI can only tell you *patience*: sooner or later your song will be availabe to download from Telegram by a way or other 😄",
@@ -248,20 +240,37 @@ rate the bot ⭐ an then *leave a review* 📝.\nWe read them _every day_, so we
       bot.editMessageText(text="Por favor, espere...",
         chat_id=chat_id,
         message_id=message_id)
-      url_file = descarga(chat_id,title)
+      title_file="title_{}.txt".format(chat_id)
+      video_file = "url_{}.txt".format(chat_id)
+      save_path='/home/javialonso/BOT/Songs/'
+      link = open(video_file,'r')
+      titulo = open(title_file,'r')
+      url = link.readline()
+      name = titulo.readline()
+      link.close()
+      titulo.close()
+      Id=get_yt_video_id(url)
+      ad_quality = read_audio(chat_id)
+      if ad_quality == None:
+        ad_quality = "256k"
+      mp3_name = "{}_{}_{}.mp3".format(name,Id,ad_quality)
+      complete_name_file = save_path+mp3_name
+      try:
+        url_file = descarga(mp3_name)
+      except FileNotFoundError:
+        url_file = descarga(complete_name_file)
       bot.sendMessage(text="Para los usuarios de dispositivos iOS 📱 (iPhone - iPad), aquí tenéis un enlace de [descarga directa]("+url_file+") (_recomendamos utilizar un explorador alternativo a Safari pues sino no se podrán guardar las descargas_. Prueba con *Dolphin Browser*",
         chat_id=chat_id,
         parse_mode=telegram.ParseMode.MARKDOWN)
       value="iOS"
       write_os(chat_id,user,value)
-      os.remove(full_name)
       try:
-        if path.exists(down_file):
-          os.remove(down_file)
+        if path.exists(video_file):
+          os.remove(video_file)
         if path.exists(title_file):
           os.remove(title_file)
-        if path.exists(down_file_2):
-          os.remove(down_file_2)
+        if path.exists(mp3_name):
+          os.rename('/home/javialonso/BOT/'+mp3_name,complete_name_file)
         key_f(bot,update,chat_id)
       except PermissionError:
         key_f(bot,update,chat_id)
@@ -269,16 +278,37 @@ rate the bot ⭐ an then *leave a review* 📝.\nWe read them _every day_, so we
       bot.editMessageText(text="Please, wait...",
         chat_id=chat_id,
         message_id=message_id)
-      url_file = descarga(chat_id,title)
+      title_file="title_{}.txt".format(chat_id)
+      video_file = "url_{}.txt".format(chat_id)
+      save_path='/home/javialonso/BOT/Songs/'
+      link = open(video_file,'r')
+      titulo = open(title_file,'r')
+      url = link.readline()
+      name = titulo.readline()
+      link.close()
+      titulo.close()
+      Id=get_yt_video_id(url)
+      ad_quality = read_audio(chat_id)
+      if ad_quality == None:
+        ad_quality = "256k"
+      mp3_name = "{}_{}_{}.mp3".format(name,Id,ad_quality)
+      complete_name_file = save_path+mp3_name
+      try:
+        url_file = descarga(mp3_name)
+      except FileNotFoundError:
+        url_file = descarga(complete_name_file)
       bot.sendMessage(text="For iOS users 📱 (iPhone - iPad), here you have [a direct download link]("+url_file+") (_we recommend to use an alternative browser to Safari in order to save your song_. Try with *Dolphin Browser*",
         chat_id=chat_id,
         parse_mode=telegram.ParseMode.MARKDOWN)
       value="iOS"
       write_os(chat_id,user,value)
-      os.remove(full_name)
       try:
+        if path.exists(video_file):
+          os.remove(video_file)
         if path.exists(title_file):
           os.remove(title_file)
+        if path.exists(mp3_name):
+          os.rename('/home/javialonso/BOT/'+mp3_name,complete_name_file)
         key_fen(bot,update,chat_id)
       except PermissionError:
         key_fen(bot,update,chat_id)
@@ -287,12 +317,30 @@ rate the bot ⭐ an then *leave a review* 📝.\nWe read them _every day_, so we
         chat_id=chat_id,
         message_id=message_id,
         parse_mode=telegram.ParseMode.MARKDOWN)
+      title_file="title_{}.txt".format(chat_id)
+      video_file = "url_{}.txt".format(chat_id)
+      save_path='/home/javialonso/BOT/Songs/'
+      link = open(video_file,'r')
+      titulo = open(title_file,'r')
+      url = link.readline()
+      name = titulo.readline()
+      link.close()
+      titulo.close()
+      Id=get_yt_video_id(url)
+      ad_quality = read_audio(chat_id)
+      if ad_quality == None:
+        ad_quality = "256k"
+      mp3_name = "{}_{}_{}.mp3".format(name,Id,ad_quality)
+      complete_name_file = save_path+mp3_name
       value="Android"
       write_os(chat_id,user,value)
-      os.remove(full_name)
       try:
+        if path.exists(video_file):
+          os.remove(video_file)
         if path.exists(title_file):
           os.remove(title_file)
+        if path.exists(mp3_name):
+          os.rename('/home/javialonso/BOT/'+mp3_name,complete_name_file)
         key_f(bot,update,chat_id)
       except PermissionError:
         key_f(bot,update,chat_id)
@@ -301,12 +349,30 @@ rate the bot ⭐ an then *leave a review* 📝.\nWe read them _every day_, so we
         chat_id=chat_id,
         message_id=message_id,
         parse_mode=telegram.ParseMode.MARKDOWN)
+      title_file="title_{}.txt".format(chat_id)
+      video_file = "url_{}.txt".format(chat_id)
+      save_path='/home/javialonso/BOT/Songs/'
+      link = open(video_file,'r')
+      titulo = open(title_file,'r')
+      url = link.readline()
+      name = titulo.readline()
+      link.close()
+      titulo.close()
+      Id=get_yt_video_id(url)
+      ad_quality = read_audio(chat_id)
+      if ad_quality == None:
+        ad_quality = "256k"
+      mp3_name = "{}_{}_{}.mp3".format(name,Id,ad_quality)
+      complete_name_file = save_path+mp3_name
       value="Android"
       write_os(chat_id,user,value)
-      os.remove(full_name)
       try:
+        if path.exists(video_file):
+          os.remove(video_file)
         if path.exists(title_file):
           os.remove(title_file)
+        if path.exists(mp3_name):
+          os.rename('/home/javialonso/BOT/'+mp3_name,complete_name_file)
         key_fen(bot,update,chat_id)
       except PermissionError:
         key_fen(bot,update,chat_id)
@@ -370,7 +436,7 @@ rate the bot ⭐ an then *leave a review* 📝.\nWe read them _every day_, so we
           chat_id=chat_id,
           message_id=message_id)
       elif 'en' in read_database(chat_id):
-        bot.editMessageText(text="Audio quality preferences saved correctly. Use /preferences for changing it whenever you want",
+        bot.editMessageText(text="Audio quality preferences saved correctly. Use /preferences for changing them whenever you want",
           chat_id=chat_id,
           message_id=message_id)
       value = "120k"
@@ -381,7 +447,7 @@ rate the bot ⭐ an then *leave a review* 📝.\nWe read them _every day_, so we
           chat_id=chat_id,
           message_id=message_id)
       elif 'en' in read_database(chat_id):
-        bot.editMessageText(text="Audio quality preferences saved correctly. Use /preferences for changing it whenever you want",
+        bot.editMessageText(text="Audio quality preferences saved correctly. Use /preferences for changing them whenever you want",
           chat_id=chat_id,
           message_id=message_id)
       value = "256k"
@@ -392,7 +458,7 @@ rate the bot ⭐ an then *leave a review* 📝.\nWe read them _every day_, so we
           chat_id=chat_id,
           message_id=message_id)
       elif 'en' in read_database(chat_id):
-        bot.editMessageText(text="Audio quality preferences saved correctly. Use /preferences for changing it whenever you want",
+        bot.editMessageText(text="Audio quality preferences saved correctly. Use /preferences for changing them whenever you want",
           chat_id=chat_id,
           message_id=message_id)
       value = "320k"
