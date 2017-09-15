@@ -379,23 +379,7 @@ def voice(bot,update):                                  # Function for handling 
     bot.sendMessage(chat_id,text="What a beautiful voice, but I prefer _Lady GaGa_ 💃",
       parse_mode=telegram.ParseMode.MARKDOWN)
 
-@run_async
-def log(bot,update):
-  date = time.strftime("%d_%m_%Y")
-  next_date = time.strftime("%d_%m_%Y")
-  chat_id = "179622715"
-  path = "bot_log-WARNS--"+date+".log"
-  bot.sendMessage(chat_id=chat_id,text="Iniciado correctamente el servicio de envío de _logs_",parse_mode=telegram.ParseMode.MARKDOWN)
-  while date == next_date:
-    next_date = time.strftime("%d_%m_%Y")
-    time.sleep(1)
-  try:
-    log_file = open(path,'rb')
-    bot.sendDocument(chat_id,log_file)
-    log_file.close()
-  except telegram.error.BadRequest:
-    bot.sendMessage(chat_id=chat_id,text="*EL LOG DE HOY ESTÁ VACÍO*",parse_mode=telegram.ParseMode.MARKDOWN)
-  log(bot,update)
+
 
 # Print in console the requierd Copyright message because of GLP v3 license
 
@@ -432,8 +416,8 @@ change_handler = CommandHandler('changelog', changes)
 dispatcher.add_handler(change_handler)
 pref_handler = CommandHandler('preferences', pref)
 dispatcher.add_handler(pref_handler)
-log_handler = CommandHandler('start_logging_sending',log)
-dispatcher.add_handler(log_handler)
+
+
 
 # Initialize "Message" handlers
 photo_handler = MessageHandler(Filters.photo, photo)
